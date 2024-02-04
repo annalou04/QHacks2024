@@ -6,10 +6,7 @@ Date: February 3, 2024
 # import stuff
 import openai
 from openai import OpenAI
-client = OpenAI(
-	# defaults to os.environ.get("OPENAI_API_KEY")
-	api_key="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"
-)
+client = OpenAI()
 from docx import Document
 
 
