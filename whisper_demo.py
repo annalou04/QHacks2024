@@ -1,35 +1,40 @@
-# importing stuff
+"""
+This is a demo of using Whisper-1 to create text from an audio file, and save it to a Word document for QHACKS 2024.
+Author: Anna Lou
+Date: February 3, 2024
+"""
+# import stuff
+import openai
 from openai import OpenAI
-
 client = OpenAI(
 	# defaults to os.environ.get("OPENAI_API_KEY")
-	# api_key="My API Key",
+	api_key="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"
 )
 from docx import Document
 
 
 def transcribe_audio(audio_file_path):
-	"""Uses the Whisper model to take in an audio file and transcribes it"""
-
-	with open(audio_file_path, 'rb') as audio_file:
-		transcription = client.audio.transcriptions.create("whisper-1", audio_file)
-	return transcription['text']
-
+	"""Take in an audio file and transcribes it (Whisper model)"""  
+	audio_file= open(audio_file_path, "rb")
+	transcript = client.audio.transcriptions.create(
+		model="whisper-1", 
+		file=audio_file
+	)
+	print(transcript)
+	stripped_transcript = str(transcript)[20:-2]
+	return(stripped_transcript)
 
 def save_as_docx(transcription, filename):
-    """Converts the raw text to a Word document"""
-    doc = Document()
-    for key, value in transcription.items():
-        # Replace underscores with spaces and capitalize each word for the heading
-        heading = ' '.join(word.capitalize() for word in key.split('_'))
-        doc.add_heading(heading, level=1)
-        doc.add_paragraph(value)
-        # Add a line break between sections
-        doc.add_paragraph()
-    doc.save(filename)
-    
-audio_file_path = "Earningscall.wav"
-transcription = transcribe_audio(audio_file_path)
-print(transcription)
+	"""Converts the raw text to a Word document"""
+	doc = Document()
+	doc.add_paragraph(str(transcription))
+	doc.save(filename)
 
-save_as_docx(transcription, 'meeting_minutes.docx')
+# Change this variable to the path your audio is in
+audio_file_path = "/Users/anna/Downloads/QHACKS24/QHacks2024/harvard.wav"
+
+# converts the audio into text
+transcription = transcribe_audio(audio_file_path)
+
+# change the name to whatever you want the name of the file to be
+save_as_docx(transcription, 'text_from_audio.docx')
